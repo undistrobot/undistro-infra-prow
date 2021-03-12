@@ -27,3 +27,4 @@ secret.yaml
 
 # Binaries
 logexporter/cmd/logexporter
+/.project
