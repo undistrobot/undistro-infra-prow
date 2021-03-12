@@ -15,7 +15,7 @@ metadata:
 data:
   plugins.yaml: |
     plugins:
-      << your_github_org >>:
+      getupio-undistro:
       - approve
       - assign
       - blunderbuss
@@ -35,18 +35,18 @@ apiVersion: v1
 kind: Secret
 metadata:
   namespace: prow
-  name: github-token
+  name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
 stringData:
-  token: <<insert-token-here>>
+  token: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   namespace: prow
-  name: hmac-token
+  name: 357f52a2e4391234af33ddb0d3dc7674636e6044
 stringData:
   # Generate via `openssl rand -hex 20`. This is the secret used in the GitHub webhook configuration
-  hmac: << insert-hmac-token-here >>
+  hmac: 357f52a2e4391234af33ddb0d3dc7674636e6044
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -86,11 +86,11 @@ data:
     plank:
       job_url_prefix_config:
         # TODO: Remove the gcs suffix once https://github.com/kubernetes/test-infra/pull/17779 is in
-        "*": https://prow.<< your-domain.com >>/view/gs
+        "*": https://prow.undistro.io/view/gs
       report_templates:
         '*': >-
-            [Full PR test history](https://prow.<< your-domain.com >>/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
-            [Your PR dashboard](https://prow.<< your-domain.com >>/pr?query=is:pr+state:open+author:{{with
+            [Full PR test history](https://prow.undistro.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
+            [Your PR dashboard](https://prow.undistro.io/pr?query=is:pr+state:open+author:{{with
             index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
       default_decoration_configs:
         "*":
@@ -115,7 +115,7 @@ data:
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
         orgs:
-        - << your_github_org >>
+        - getupio-undistro
 
     decorate_all_jobs: true
     periodics:
@@ -245,7 +245,7 @@ spec:
         args:
         - --dry-run=false
         - --config-path=/etc/config/config.yaml
-        - --github-token-path=/etc/github/token
+        - --e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a-path=/etc/github/token
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         ports:
@@ -255,7 +255,7 @@ spec:
         - name: hmac
           mountPath: /etc/webhook
           readOnly: true
-        - name: github-token
+        - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
           mountPath: /etc/github
           readOnly: true
         - name: config
@@ -280,10 +280,10 @@ spec:
       volumes:
       - name: hmac
         secret:
-          secretName: hmac-token
-      - name: github-token
+          secretName: 357f52a2e4391234af33ddb0d3dc7674636e6044
+      - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
         secret:
-          secretName: github-token
+          secretName: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
       - name: config
         configMap:
           name: config
@@ -367,7 +367,7 @@ spec:
         - --plugin-config=/etc/plugins/plugins.yaml
         - --tide-url=http://tide/
         - --hook-url=http://hook:8888/plugin-help
-        - --github-token-path=/etc/github/token
+        - --e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a-path=/etc/github/token
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --github-graphql-endpoint=http://ghproxy/graphql
@@ -380,7 +380,7 @@ spec:
         - name: config
           mountPath: /etc/config
           readOnly: true
-        - name: github-token
+        - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
           mountPath: /etc/github
           readOnly: true
         - name: plugins
@@ -406,9 +406,9 @@ spec:
       - name: config
         configMap:
           name: config
-      - name: github-token
+      - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
         secret:
-          secretName: github-token
+          secretName: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
       - name: plugins
         configMap:
           name: plugins
@@ -491,7 +491,7 @@ spec:
         args:
         - --dry-run=false
         - --config-path=/etc/config/config.yaml
-        - --github-token-path=/etc/github/token
+        - --e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a-path=/etc/github/token
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --github-graphql-endpoint=http://ghproxy/graphql
@@ -502,7 +502,7 @@ spec:
           - name: http
             containerPort: 8888
         volumeMounts:
-        - name: github-token
+        - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
           mountPath: /etc/github
           readOnly: true
         - name: config
@@ -512,9 +512,9 @@ spec:
           mountPath: /etc/gcs-credentials
           readOnly: true
       volumes:
-      - name: github-token
+      - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
         secret:
-          secretName: github-token
+          secretName: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
       - name: config
         configMap:
           name: config
@@ -550,7 +550,7 @@ spec:
     serviceName: deck
     servicePort: 80
   rules:
-  - host: prow.<< your-domain.com >>
+  - host: prow.undistro.io
     http:
       paths:
       - path: /
@@ -563,7 +563,7 @@ spec:
           servicePort: 8888
   tls:
   - hosts:
-    - prow.<< your-domain.com >>
+    - prow.undistro.io
     secretName: prow-ingress-tls
 ---
 apiVersion: apps/v1
@@ -593,13 +593,13 @@ spec:
         - --continue-on-error=true
         - --plugin-config=/etc/plugins/plugins.yaml
         - --config-path=/etc/config/config.yaml
-        - --github-token-path=/etc/github/token
+        - --e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a-path=/etc/github/token
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
         - --status-path=gs://status-reconciler/status-reconciler-status
         volumeMounts:
-        - name: github-token
+        - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
           mountPath: /etc/github
           readOnly: true
         - name: config
@@ -612,9 +612,9 @@ spec:
           mountPath: /etc/gcs-credentials
           readOnly: true
       volumes:
-      - name: github-token
+      - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
         secret:
-          secretName: github-token
+          secretName: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
       - name: config
         configMap:
           name: config
@@ -1029,22 +1029,22 @@ spec:
         args:
         - --dry-run=false
         - --config-path=/etc/config/config.yaml
-        - --github-token-path=/etc/github/token
+        - --e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a-path=/etc/github/token
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --enable-controller=plank
         image: gcr.io/k8s-prow/prow-controller-manager:v20210310-a49501d5de
         volumeMounts:
-        - name: github-token
+        - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
           mountPath: /etc/github
           readOnly: true
         - name: config
           mountPath: /etc/config
           readOnly: true
       volumes:
-      - name: github-token
+      - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
         secret:
-          secretName: github-token
+          secretName: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
       - name: config
         configMap:
           name: config
@@ -1175,14 +1175,14 @@ spec:
         - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
-        - --github-token-path=/etc/github/token
+        - --e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a-path=/etc/github/token
         - --github-workers=10
         - --kubernetes-blob-storage-workers=10
         volumeMounts:
         - name: config
           mountPath: /etc/config
           readOnly: true
-        - name: github-token
+        - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
           mountPath: /etc/github
           readOnly: true
         - name: gcs-credentials
@@ -1192,9 +1192,9 @@ spec:
       - name: config
         configMap:
           name: config
-      - name: github-token
+      - name: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
         secret:
-          secretName: github-token
+          secretName: e2e2f015cfb4c5b50cab9cef1fb0571294de3a1a
       - name: gcs-credentials
         secret:
           secretName: gcs-credentials
